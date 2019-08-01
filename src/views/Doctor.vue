@@ -18,7 +18,7 @@
         >
           <ion-label text-wrap>
             <ion-text>
-              <h3>{{ doctor.full_name }}</h3>
+              <h3>{{ doctor.name }}</h3>
             </ion-text>
             <ion-text color="medium">
               <p>{{ doctor.area }}</p>
@@ -36,9 +36,11 @@
 </template>
 
 <script>
+import doctor from '@/store/doctor'
+
 export default {
   name: 'Doctor',
-  data() {
+  adata() {
     let doctors = [
       {
         name: 'test',
@@ -59,6 +61,16 @@ export default {
 
     return {
       doctors
+    }
+  },
+
+  mounted() {
+    doctor.fetch()
+  },
+
+  computed: {
+    doctors() {
+      return doctor.doctors
     }
   }
 }

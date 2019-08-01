@@ -55,9 +55,17 @@ export default {
         {
           label: 'Institution'
           // route: '/institution'
+        },
+        {
+          label: 'Login',
+          route: '/login'
         }
       ]
     }
+  },
+  async mounted() {
+    window.app = this
+    console.log(await this.$call('ping'))
   },
   methods: {
     goToRoute(route) {

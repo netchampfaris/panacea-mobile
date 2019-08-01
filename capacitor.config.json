@@ -1,0 +1,7 @@
+{
+  "appId": "com.mobile.panacea",
+  "appName": "Panacea Mobile",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "dist"
+}

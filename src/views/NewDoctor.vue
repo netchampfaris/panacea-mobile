@@ -23,12 +23,13 @@
         <ion-input
           v-else
           :value="doc[df.fieldname]"
+          :required="Boolean(df.reqd)"
           @ionChange="inputChange($event, df)"
         ></ion-input>
       </ion-item>
 
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button @click="showSuccess">
+        <ion-fab-button @click="submit">
           <ion-icon name="checkmark"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -43,54 +44,36 @@
 </template>
 
 <script>
+import doctor from '@/store/doctor'
+
 export default {
   name: 'NewDoctor',
   data() {
-    let fields = [
-      {
-        fieldtype: 'Data',
-        fieldname: 'my_core',
-        label: 'My Core'
-      },
-      {
-        fieldtype: 'Data',
-        fieldname: 'visit_frequency',
-        label: 'Visit Frequency'
-      },
-      {
-        fieldtype: 'Data',
-        fieldname: 'patient_income',
-        label: 'Patient Income'
-      },
-      {
-        fieldtype: 'Data',
-        fieldname: 'pin_code',
-        label: 'Pin Code'
-      },
-      {
-        fieldtype: 'Data',
-        fieldname: 'sub_territory',
-        label: 'Consultation Fee'
-      },
-      {
-        fieldtype: 'Check',
-        fieldname: 'computer_savvy',
-        label: 'Computer Savvy'
-      }
-    ]
-
-    let doc = fields.reduce((acc, df) => {
-      acc[df.fieldname] = null
-      if (df.fieldtype === 'Check') {
-        acc[df.fieldname] = false
-      }
-      return acc
-    }, {})
-
     return {
-      fields,
-      doc
+      fields: [],
+      doc: null
     }
+  },
+
+  async mounted() {
+    await doctor.fetchMeta()
+
+    this.fields = doctor.meta.fields
+    if (doctor.meta.autoname === 'Prompt') {
+      this.fields = [
+        {
+          fieldtype: 'Data',
+          fieldname: 'name',
+          label: 'Name'
+        },
+        ...this.fields
+      ]
+    }
+
+    this.doc = this.fields.reduce((doc, df) => {
+      doc[df.fieldname] = null
+      return doc
+    }, {})
   },
 
   methods: {
@@ -104,17 +87,19 @@ export default {
       this.doc[df.fieldname] = value
     },
 
-    showSuccess() {
-      return this.$ionic.alertController
-        .create({
-          header: 'Success',
-          message: 'Doctor created successfully',
-          buttons: ['OK']
-        })
-        .then(a => a.present())
-        .then(() => {
-          this.$router.push('/doctor')
-        })
+    submit() {
+      doctor.save(this.doc).then(() => {
+        return this.$ionic.alertController
+          .create({
+            header: 'Success',
+            message: 'Doctor created successfully',
+            buttons: ['OK']
+          })
+          .then(a => a.present())
+          .then(() => {
+            this.$router.push('/doctor')
+          })
+      })
     }
   }
 }
