@@ -1,6 +1,6 @@
 {
-  "name": "panacea-mobile-vue",
-  "short_name": "panacea-mobile-vue",
+  "name": "panacea-mobile",
+  "short_name": "panacea-mobile",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
